@@ -1,0 +1,611 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#203f36"><title>LitReader — Scientific reading log</title><style>:root{--ink:#19302a;--muted:#718079;--paper:#f6f4ec;--card:#fffefa;--line:#dedfd6;--sage:#dbe8df;--green:#203f36;--amber:#d79a3b;--red:#a85148;--shadow:0 14px 40px rgba(26,48,42,.08)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}.app-shell{min-height:100vh}.topbar{height:68px;padding:0 max(24px,calc((100vw - 1440px)/2));display:flex;align-items:center;gap:20px;border-bottom:1px solid var(--line);background:rgba(246,244,236,.92);position:sticky;top:0;z-index:5;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:11px;font-family:Georgia,serif;font-size:19px;letter-spacing:-.02em}.brand-mark{width:31px;height:31px;border-radius:9px;background:var(--green);color:#fff;display:grid;place-items:center;font:19px Georgia}.top-actions{margin-left:auto;display:flex;gap:8px}.button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:9px 13px;font:600 13px inherit;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.18s}.button:hover{border-color:#b8c6bd;transform:translateY(-1px)}.button.primary{background:var(--green);color:white;border-color:var(--green)}.button.danger{color:var(--red)}.button:disabled{opacity:.55;cursor:wait}.icon-button{border:0;background:transparent;font-size:20px;cursor:pointer;color:var(--muted)}.layout{max-width:1440px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:26px;padding:28px 24px 56px}.editor{min-width:0}.editor-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.eyebrow{color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;margin:0 0 5px}.editor-heading h1,.library-head h2{font:400 27px/1.1 Georgia,serif;letter-spacing:-.025em;margin:0}.sheet{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px;overflow:hidden}.section{padding:24px 26px;border-bottom:1px solid var(--line)}.section:last-child{border-bottom:0}.section-title{font:400 18px Georgia,serif;margin:0 0 18px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}.span-2{grid-column:span 2}label{display:block;color:#52625c;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}input,textarea,select{display:block;width:100%;margin-top:7px;border:1px solid #d7dbd4;background:#fbfbf7;color:var(--ink);border-radius:8px;padding:10px 11px;font:14px/1.45 inherit;outline:none;transition:.15s}input:focus,textarea:focus,select:focus{border-color:#789187;box-shadow:0 0 0 3px rgba(72,112,95,.1);background:#fff}input.title-input{font:20px Georgia,serif;padding:12px 13px}textarea{min-height:96px;resize:vertical}textarea.large{min-height:138px}.editor-footer{padding:17px 24px;display:flex;gap:10px;align-items:center;background:#faf9f4}.editor-footer .danger{margin-left:auto}.library{position:sticky;top:96px;align-self:start;max-height:calc(100vh - 118px);display:flex;flex-direction:column}.library-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:15px}.stats{display:flex;gap:17px}.stat{text-align:right}.stat strong{display:block;font:400 18px Georgia}.stat span{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}.search-wrap{position:relative}.search-wrap input{padding-left:35px;margin:0;background:var(--card)}.search-icon{position:absolute;left:12px;top:10px;color:var(--muted)}.filters{display:flex;gap:6px;overflow:auto;padding:11px 0 14px}.filter-chip{white-space:nowrap;border:1px solid var(--line);background:transparent;border-radius:99px;padding:6px 10px;font:600 11px inherit;color:var(--muted);cursor:pointer}.filter-chip.active{background:var(--green);border-color:var(--green);color:white}.entry-list{overflow:auto;padding-right:4px}.entry-card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:9px;cursor:pointer;transition:.16s}.entry-card:hover,.entry-card.active{border-color:#9caf9f;box-shadow:0 6px 18px rgba(32,63,54,.07)}.entry-card.active{box-shadow:inset 3px 0 var(--green)}.entry-topline{display:flex;align-items:center;gap:6px;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.entry-topline time{margin-left:auto}.status-dot{width:7px;height:7px;border-radius:50%;background:#94a099}.status-read{background:#3f8469}.status-reading{background:var(--amber)}.status-revisit{background:#8a67a2}.entry-card h3{font:400 17px/1.25 Georgia;margin:9px 0 6px}.entry-card p{color:var(--muted);line-height:1.4;margin:0}.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}.tag-row span{background:var(--sage);color:#426154;border-radius:4px;padding:3px 6px;font-size:10px}.empty-state{text-align:center;padding:56px 24px;color:var(--muted);border:1px dashed #cad0c8;border-radius:12px}.empty-state span{font:32px Georgia;color:#7f998d}.empty-state h3{font:400 18px Georgia;color:var(--ink);margin:8px 0}.empty-state p{margin:0}.toast{position:fixed;left:50%;bottom:28px;z-index:20;transform:translate(-50%,20px);opacity:0;background:var(--green);color:#fff;border-radius:9px;padding:11px 16px;box-shadow:var(--shadow);transition:.25s;pointer-events:none}.toast.warn{background:#85554a}.toast.show{transform:translate(-50%,0);opacity:1}.hidden{display:none!important}dialog{border:0;padding:0;border-radius:15px;width:min(720px,calc(100% - 28px));background:var(--card);color:var(--ink);box-shadow:0 30px 90px rgba(20,35,30,.28)}dialog::backdrop{background:rgba(25,38,33,.45);backdrop-filter:blur(3px)}.dialog-head{padding:20px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.dialog-head h2{font:400 23px Georgia;margin:0}.settings-tabs{display:flex;gap:8px;padding:16px 22px 0}.settings-tab{border:0;background:transparent;border-bottom:2px solid transparent;padding:8px 5px;color:var(--muted);font:600 13px inherit;cursor:pointer}.settings-tab.active{color:var(--green);border-color:var(--green)}.settings-panel{display:none;padding:20px 22px}.settings-panel.active{display:block}.settings-panel p{color:var(--muted);line-height:1.55;margin-top:0}.step{display:flex;gap:12px;margin:14px 0}.step-num{flex:0 0 24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--sage);font-size:11px;font-weight:700}.code-wrap{position:relative}.code-wrap textarea{font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;min-height:145px}.code-wrap .button{position:absolute;right:7px;top:13px}.dialog-footer{display:flex;justify-content:flex-end;gap:9px;padding:15px 22px;border-top:1px solid var(--line);background:#faf9f4}.privacy-note{display:flex;gap:8px;color:var(--muted);font-size:11px;margin-top:15px}.mobile-only{display:none}@media(max-width:980px){.layout{grid-template-columns:1fr}.library{position:static;max-height:none;grid-row:1}.entry-list{max-height:390px}.top-actions .button span{display:none}.span-8,.span-6,.span-4,.span-3,.span-2{grid-column:span 6}}@media(max-width:620px){.topbar{padding:0 14px}.layout{padding:18px 12px 42px}.section{padding:20px 17px}.span-8,.span-6,.span-4,.span-3,.span-2{grid-column:span 12}.editor-heading{align-items:end}.stats{gap:10px}.editor-footer{padding:14px;position:sticky;bottom:0}.button{padding:9px 11px}.top-actions{gap:4px}.brand span:last-child{display:none}.mobile-only{display:inline}}
+
+.doi-first {
+  background: #f1f6f2;
+  border: 1px solid #d4e2d8;
+  border-radius: 10px;
+  padding: 13px;
+}
+.doi-first small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.input-action { display: flex; gap: 8px; }
+.input-action input { margin-top: 7px; }
+.input-action .button { margin-top: 7px; flex: 0 0 auto; }
+.heat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 14px 15px;
+  margin-bottom: 12px;
+}
+.heat-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
+.heat-head .eyebrow { display: block; margin-bottom: 4px; }
+.heat-head strong { font: 400 16px Georgia; }
+.heat-head > span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.heat-body { display: flex; gap: 7px; align-items: flex-start; }
+.day-labels {
+  height: 88px;
+  display: grid;
+  grid-template-rows: repeat(7, 10px);
+  gap: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 10px;
+}
+.day-labels span:nth-child(1) { grid-row: 1; }
+.day-labels span:nth-child(2) { grid-row: 3; }
+.day-labels span:nth-child(3) { grid-row: 5; }
+.heatmap {
+  display: grid;
+  grid-template-rows: repeat(7, 10px);
+  grid-auto-flow: column;
+  grid-auto-columns: 10px;
+  gap: 3px;
+  overflow: hidden;
+}
+.heat-day, .heat-legend i { width: 10px; height: 10px; border-radius: 2px; background: #e5e7e1; }
+.heat-day { display: block; }
+.level-1 { background: #c7ddd0 !important; }
+.level-2 { background: #8fbaa2 !important; }
+.level-3 { background: #548b70 !important; }
+.level-4 { background: #286047 !important; }
+.heat-day.future { opacity: .28; }
+.heat-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; color: var(--muted); font-size: 9px; margin-top: 9px; }
+.heat-legend i { display: block; }
+
+@media (max-width: 620px) {
+  .input-action { align-items: stretch; }
+  .heatmap { grid-auto-columns: 9px; grid-template-rows: repeat(7, 9px); }
+  .heat-day, .heat-legend i { width: 9px; height: 9px; }
+}
+</style></head><body>
+<div class="app-shell"><header class="topbar"><div class="brand"><span class="brand-mark">L</span><span>LitReader</span></div><div class="top-actions"><button class="button" id="zoteroImport" type="button">Import Zotero</button><button class="button" id="exportXlsx" type="button">Export XLSX</button><button class="button" id="googleSync" type="button">Sync Sheets</button><button class="icon-button" id="openSettings" type="button" aria-label="Connection settings" title="Connection settings">⋯</button></div></header>
+<main class="layout"><section class="editor"><div class="editor-heading"><div><p class="eyebrow">Daily reading log</p><h1 id="editorHeading">New reading note</h1></div><button class="button" id="newEntry" type="button">＋ New</button></div>
+<form id="entryForm" class="sheet"><div class="section"><h2 class="section-title">Article information</h2><div class="grid"><div class="span-12 doi-first"><label for="doiInput">Start with a DOI</label><div class="input-action"><input id="doiInput" name="doi" placeholder="Paste a DOI or doi.org link"><button class="button" id="fetchDoi" type="button" aria-label="Retrieve article information from DOI">Retrieve</button></div><small id="doiStatus" aria-live="polite">Title, authors, venue, year and URL will be filled automatically.</small></div><label class="span-12">Title<input class="title-input" name="title" required placeholder="What did you read?"></label><label class="span-8">Authors<input name="authors" placeholder="Surname, Given; Surname, Given"></label><label class="span-2">Year<input name="year" inputmode="numeric" placeholder="2026"></label><label class="span-2">Rating<select name="rating"><option value="0">—</option><option value="1">1 / 5</option><option value="2">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></label><label class="span-6">Journal / venue<input name="journal" placeholder="Nature Methods"></label><label class="span-3">Read date<input name="readDate" type="date"></label><label class="span-3">Status<select name="status"><option>To read</option><option>Reading</option><option selected>Read</option><option>Revisit</option></select></label><label class="span-12">Article URL<input name="url" type="url" placeholder="https://..."></label><label class="span-12">Tags<input name="tags" placeholder="single-cell, methods, metabolism"></label></div></div>
+<div class="section"><h2 class="section-title">Reading notes</h2><div class="grid"><label class="span-12">Key points<textarea class="large" name="keyPoints" placeholder="What are the 2–4 claims worth remembering?"></textarea></label><label class="span-6">Methods worth keeping<textarea name="methods" placeholder="Design, sample, analysis, useful techniques…"></textarea></label><label class="span-6">Limitations / questions<textarea name="limitations" placeholder="What is uncertain, missing or overstated?"></textarea></label></div></div>
+<div class="section"><h2 class="section-title">Your thinking</h2><div class="grid"><label class="span-12">Connections, critique, ideas<textarea class="large" name="thinking" placeholder="How does this change or connect to your work?"></textarea></label><label class="span-12">Next steps<textarea name="nextSteps" placeholder="Follow-up paper, experiment, person to ask…"></textarea></label></div></div>
+<div class="editor-footer"><button class="button primary" type="submit">Save note</button><button class="button" id="zoteroSend" type="button">Send to Zotero</button><button class="button danger hidden" id="deleteEntry" type="button">Delete</button></div></form></section>
+<aside class="library"><div class="library-head"><div><p class="eyebrow">Your library</p><h2>Reading notes</h2></div><div class="stats"><div class="stat"><strong id="monthCount">0</strong><span>This month</span></div><div class="stat"><strong id="entryCount">0</strong><span>Total</span></div></div></div><section class="heat-card"><div class="heat-head"><div><span class="eyebrow">Daily reading</span><strong><span id="streakCount">0</span> day streak</strong></div><span>Last 16 weeks</span></div><div class="heat-body"><div class="day-labels"><span>M</span><span>W</span><span>F</span></div><div class="heatmap" id="heatmap" role="img" aria-label="Daily reading activity heatmap"></div></div><div class="heat-legend"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></section><div class="search-wrap"><span class="search-icon">⌕</span><input id="search" aria-label="Search reading notes" placeholder="Search title, author, DOI or tag…"></div><div class="filters"><button class="filter-chip active" data-filter="All">All</button><button class="filter-chip" data-filter="To read">To read</button><button class="filter-chip" data-filter="Reading">Reading</button><button class="filter-chip" data-filter="Read">Read <span id="readCount"></span></button><button class="filter-chip" data-filter="Revisit">Revisit</button></div><div class="entry-list" id="entryList"></div></aside></main></div>
+<dialog id="settingsDialog"><div class="dialog-head"><h2>Connections & data</h2><button class="icon-button" id="closeSettings" type="button" aria-label="Close">×</button></div><div class="settings-tabs"><button class="settings-tab active" type="button" data-tab="google">Google Sheets</button><button class="settings-tab" type="button" data-tab="zotero">Zotero</button><button class="settings-tab" type="button" data-tab="data">Local data</button></div>
+<section class="settings-panel active" id="googlePanel"><p>Connect a Google Sheet through a small Apps Script web app. Sync replaces the “Reading log” sheet with your current local library.</p><div class="step"><span class="step-num">1</span><div>In a new Google Sheet, open <strong>Extensions → Apps Script</strong> and paste this code.</div></div><div class="code-wrap"><textarea id="appsScript" readonly></textarea><button class="button" id="copyScript" type="button">Copy</button></div><div class="step"><span class="step-num">2</span><div>In Apps Script Project Settings, add a script property named <strong>LITREADER_TOKEN</strong> with a private value.</div></div><div class="step"><span class="step-num">3</span><div>Deploy as a web app with access set to <strong>Anyone</strong>, then paste the web app URL and matching token below.</div></div><label>Web app URL<input name="googleEndpoint" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Shared token<input name="googleToken" type="password" autocomplete="off" placeholder="Same value as LITREADER_TOKEN"></label></section>
+<section class="settings-panel" id="zoteroPanel"><p>Use a Zotero user library ID and API key. A read-only key can import; write access is needed to send an article and its notes.</p><div class="grid"><label class="span-4">User library ID<input name="zoteroUserId" inputmode="numeric" placeholder="1234567"></label><label class="span-8">API key<input name="zoteroApiKey" type="password" autocomplete="off" placeholder="Zotero API key"></label></div><div class="privacy-note"><span>◉</span><span>The key is stored only in this browser’s local storage.</span></div></section>
+<section class="settings-panel" id="dataPanel"><p>Your notes live in this browser. Download a JSON backup before moving the HTML file, clearing browser data, or switching browsers.</p><div class="grid"><div class="span-6"><button class="button" id="exportBackup" type="button">Download backup</button></div><div class="span-6"><button class="button" id="importBackup" type="button">Import backup</button><input class="hidden" id="backupFile" type="file" accept="application/json,.json"></div></div></section><div class="dialog-footer"><button class="button primary" id="saveSettings" type="button">Save settings</button></div></dialog><div class="toast" id="toast" role="status" aria-live="polite"></div><script>(() => {
+const STORAGE_KEY = "litreader.entries.v1";
+const SETTINGS_KEY = "litreader.settings.v1";
+const qs = (selector) => document.querySelector(selector);
+const qsa = (selector) => [...document.querySelectorAll(selector)];
+const dateKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const today = () => dateKey(new Date());
+const now = () => new Date().toISOString();
+const uid = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+const escapeXml = (value) => String(value ?? "")
+    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&apos;");
+const normalizeDoi = (doi) => doi.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
+const tagsFrom = (value) => [...new Set(value.split(",").map(tag => tag.trim()).filter(Boolean))];
+const nativeDoiCallbacks = new Map();
+let doiLookupTimer = 0;
+globalThis.__litreaderDoiResult = (result) => {
+    const callback = nativeDoiCallbacks.get(result.id);
+    if (!callback)
+        return;
+    window.clearTimeout(callback.timer);
+    nativeDoiCallbacks.delete(result.id);
+    if (result.error)
+        callback.reject(new Error(result.error));
+    else
+        callback.resolve(result);
+};
+function nativeDoiLookup(doi) {
+    return new Promise((resolve, reject) => {
+        const id = uid();
+        const timer = window.setTimeout(() => {
+            nativeDoiCallbacks.delete(id);
+            reject(new Error("The DOI lookup timed out."));
+        }, 15000);
+        nativeDoiCallbacks.set(id, { resolve, reject, timer });
+        window.webkit.messageHandlers.doiLookup.postMessage({ id, doi });
+    });
+}
+function setFormValue(name, value) {
+    const field = document.querySelector(`[name="${name}"]`);
+    if (field && value)
+        field.value = value;
+}
+function crossrefMetadata(message) {
+    const date = message.issued ?? message["published-print"] ?? message["published-online"] ?? message.created;
+    return {
+        title: message.title?.[0] ?? "",
+        authors: (message.author ?? []).map((author) => [author.given, author.family].filter(Boolean).join(" ") || author.name).filter(Boolean).join(", "),
+        journal: message["container-title"]?.[0] ?? message.publisher ?? "",
+        year: String(date?.["date-parts"]?.[0]?.[0] ?? ""),
+        url: message.URL ?? "",
+        tags: (message.subject ?? []).filter(Boolean).slice(0, 6),
+        source: "Crossref"
+    };
+}
+function dataciteMetadata(attributes) {
+    return {
+        title: attributes.titles?.[0]?.title ?? attributes.title ?? "",
+        authors: (attributes.creators ?? []).map((author) => author.name ?? [author.givenName, author.familyName].filter(Boolean).join(" ")).filter(Boolean).join(", "),
+        journal: attributes.container?.title ?? attributes.publisher ?? "",
+        year: String(attributes.publicationYear ?? ""),
+        url: attributes.url ?? "",
+        tags: (attributes.subjects ?? []).map((subject) => subject.subject).filter(Boolean).slice(0, 6),
+        source: "DataCite"
+    };
+}
+async function fetchDoiMetadata() {
+    const doi = normalizeDoi(formValue("doi"));
+    if (!/^10\.\d{4,9}\/.+/.test(doi))
+        return toast("Enter a complete DOI, such as 10.1038/s41586-024-00000-0.", "warn");
+    const button = qs("#fetchDoi");
+    window.clearTimeout(doiLookupTimer);
+    if (button.disabled)
+        return;
+    button.disabled = true;
+    button.textContent = "Looking up…";
+    qs("#doiStatus").textContent = "Searching Crossref and DataCite…";
+    try {
+        let metadata = null;
+        const nativeHandler = window.webkit?.messageHandlers?.doiLookup;
+        if (nativeHandler) {
+            const result = await nativeDoiLookup(doi);
+            metadata = result.source === "Crossref" ? crossrefMetadata(result.data ?? {}) : dataciteMetadata(result.data ?? {});
+        }
+        else {
+            try {
+                const response = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
+                if (response.ok)
+                    metadata = crossrefMetadata((await response.json()).message);
+            }
+            catch { /* Try DataCite next. */ }
+            if (!metadata?.title) {
+                const response = await fetch(`https://api.datacite.org/dois/${encodeURIComponent(doi)}`);
+                if (response.ok)
+                    metadata = dataciteMetadata((await response.json()).data?.attributes ?? {});
+            }
+        }
+        if (!metadata?.title)
+            throw new Error();
+        setFormValue("doi", doi);
+        setFormValue("title", metadata.title);
+        setFormValue("authors", metadata.authors);
+        setFormValue("journal", metadata.journal);
+        setFormValue("year", metadata.year);
+        setFormValue("url", metadata.url || `https://doi.org/${doi}`);
+        if (!formValue("tags") && metadata.tags.length)
+            setFormValue("tags", metadata.tags.join(", "));
+        qs("#editorHeading").textContent = "New reading note";
+        qs("#doiStatus").textContent = `Retrieved from ${metadata.source}.`;
+        toast(`Article information retrieved from ${metadata.source}.`);
+    }
+    catch {
+        qs("#doiStatus").textContent = "Lookup failed. Check the DOI and your internet connection.";
+        toast("No article information was found for that DOI.", "warn");
+    }
+    finally {
+        button.disabled = false;
+        button.textContent = "Retrieve";
+    }
+}
+let entries = load(STORAGE_KEY, []);
+let settings = load(SETTINGS_KEY, {
+    googleEndpoint: "", googleToken: "", zoteroUserId: "", zoteroApiKey: ""
+});
+let activeId = null;
+let activeFilter = "All";
+function load(key, fallback) {
+    try {
+        return JSON.parse(localStorage.getItem(key) ?? "");
+    }
+    catch {
+        return fallback;
+    }
+}
+function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    render();
+}
+function toast(message, tone = "ok") {
+    const el = qs("#toast");
+    el.textContent = message;
+    el.className = `toast show ${tone}`;
+    window.setTimeout(() => el.classList.remove("show"), 2800);
+}
+function emptyEntry() {
+    return {
+        id: uid(), title: "", authors: "", journal: "", year: "", doi: "", url: "",
+        readDate: today(), status: "Read", rating: 0, tags: [], keyPoints: "", methods: "",
+        limitations: "", thinking: "", nextSteps: "", createdAt: now(), updatedAt: now()
+    };
+}
+function formValue(name) {
+    return (qs(`[name="${name}"]`)).value.trim();
+}
+function readForm() {
+    const previous = entries.find(entry => entry.id === activeId);
+    return {
+        ...(previous ?? emptyEntry()),
+        id: activeId ?? uid(),
+        title: formValue("title"), authors: formValue("authors"), journal: formValue("journal"),
+        year: formValue("year"), doi: normalizeDoi(formValue("doi")), url: formValue("url"),
+        readDate: formValue("readDate"), status: formValue("status"),
+        rating: Number(formValue("rating")) || 0, tags: tagsFrom(formValue("tags")),
+        keyPoints: formValue("keyPoints"), methods: formValue("methods"),
+        limitations: formValue("limitations"), thinking: formValue("thinking"),
+        nextSteps: formValue("nextSteps"), updatedAt: now()
+    };
+}
+function fillForm(entry) {
+    activeId = entry.id;
+    for (const [name, value] of Object.entries(entry)) {
+        const field = document.querySelector(`[name="${name}"]`);
+        if (field && name !== "tags")
+            field.value = String(value ?? "");
+    }
+    qs('[name="tags"]').value = entry.tags.join(", ");
+    qs("#editorHeading").textContent = entry.title ? "Edit reading note" : "New reading note";
+    qs("#deleteEntry").classList.toggle("hidden", !entries.some(item => item.id === entry.id));
+    qs('[name="title"]').focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function resetForm() {
+    qs("#entryForm").reset();
+    fillForm(emptyEntry());
+}
+function saveEntry(event) {
+    event?.preventDefault();
+    const entry = readForm();
+    if (!entry.title) {
+        toast("Add an article title first.", "warn");
+        qs('[name="title"]').focus();
+        return;
+    }
+    const index = entries.findIndex(item => item.id === entry.id);
+    if (index >= 0)
+        entries[index] = entry;
+    else
+        entries.unshift(entry);
+    activeId = entry.id;
+    persist();
+    toast(index >= 0 ? "Reading note updated." : "Reading note saved.");
+    qs("#deleteEntry").classList.remove("hidden");
+}
+function filteredEntries() {
+    const query = qs("#search").value.trim().toLowerCase();
+    return entries
+        .filter(entry => activeFilter === "All" || entry.status === activeFilter)
+        .filter(entry => !query || [entry.title, entry.authors, entry.journal, entry.tags.join(" "), entry.doi]
+        .join(" ").toLowerCase().includes(query))
+        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+function heatmapModel(sourceEntries, weeks = 16, end = new Date()) {
+    const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 12);
+    const weekdayFromMonday = (endDay.getDay() + 6) % 7;
+    const start = new Date(endDay);
+    start.setDate(start.getDate() - ((weeks - 1) * 7 + weekdayFromMonday));
+    const counts = new Map();
+    sourceEntries.forEach(entry => {
+        if (entry.readDate)
+            counts.set(entry.readDate, (counts.get(entry.readDate) ?? 0) + 1);
+    });
+    const days = Array.from({ length: weeks * 7 }, (_, index) => {
+        const date = new Date(start);
+        date.setDate(start.getDate() + index);
+        const key = dateKey(date), count = counts.get(key) ?? 0;
+        return { key, count, future: date > endDay, level: count ? Math.min(count, 4) : 0 };
+    });
+    let streak = 0;
+    const cursor = new Date(endDay);
+    while ((counts.get(dateKey(cursor)) ?? 0) > 0) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+    }
+    return { days, streak };
+}
+function renderHeatmap() {
+    const { days, streak } = heatmapModel(entries);
+    qs("#streakCount").textContent = String(streak);
+    qs("#heatmap").innerHTML = days.map(day => `<span class="heat-day level-${day.level}${day.future ? " future" : ""}" title="${day.key}: ${day.count} article${day.count === 1 ? "" : "s"}" aria-label="${day.key}, ${day.count} articles"></span>`).join("");
+}
+function render() {
+    const list = qs("#entryList");
+    const visible = filteredEntries();
+    list.innerHTML = visible.length ? visible.map(entry => `
+    <article class="entry-card ${entry.id === activeId ? "active" : ""}" data-id="${entry.id}">
+      <div class="entry-topline">
+        <span class="status-dot status-${entry.status.toLowerCase().replace(" ", "-")}"></span>
+        <span>${escapeXml(entry.status)}</span>
+        <time>${escapeXml(entry.readDate || "No date")}</time>
+      </div>
+      <h3>${escapeXml(entry.title)}</h3>
+      <p>${escapeXml([entry.authors, entry.journal, entry.year].filter(Boolean).join(" · ") || "Citation details not added")}</p>
+      <div class="tag-row">${entry.tags.slice(0, 4).map(tag => `<span>${escapeXml(tag)}</span>`).join("")}</div>
+    </article>`).join("") : `
+    <div class="empty-state"><span>∿</span><h3>No notes here yet</h3><p>Log the first paper you read today.</p></div>`;
+    qsa(".entry-card").forEach(card => card.addEventListener("click", () => {
+        const entry = entries.find(item => item.id === card.dataset.id);
+        if (entry)
+            fillForm(entry);
+    }));
+    qs("#entryCount").textContent = String(entries.length);
+    qs("#readCount").textContent = String(entries.filter(entry => entry.status === "Read").length);
+    const month = today().slice(0, 7);
+    qs("#monthCount").textContent = String(entries.filter(entry => entry.readDate.startsWith(month)).length);
+    renderHeatmap();
+}
+function crc32(bytes) {
+    let crc = -1;
+    for (const byte of bytes) {
+        crc ^= byte;
+        for (let bit = 0; bit < 8; bit++)
+            crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+    }
+    return (crc ^ -1) >>> 0;
+}
+function zipStore(files) {
+    const encoder = new TextEncoder();
+    const chunks = [];
+    const directory = [];
+    let offset = 0;
+    const u16 = (view, at, value) => view.setUint16(at, value, true);
+    const u32 = (view, at, value) => view.setUint32(at, value, true);
+    for (const file of files) {
+        const name = encoder.encode(file.name), data = encoder.encode(file.data), crc = crc32(data);
+        const local = new Uint8Array(30 + name.length), lv = new DataView(local.buffer);
+        u32(lv, 0, 0x04034b50);
+        u16(lv, 4, 20);
+        u16(lv, 6, 0x0800);
+        u32(lv, 14, crc);
+        u32(lv, 18, data.length);
+        u32(lv, 22, data.length);
+        u16(lv, 26, name.length);
+        local.set(name, 30);
+        chunks.push(local, data);
+        const central = new Uint8Array(46 + name.length), cv = new DataView(central.buffer);
+        u32(cv, 0, 0x02014b50);
+        u16(cv, 4, 20);
+        u16(cv, 6, 20);
+        u16(cv, 8, 0x0800);
+        u32(cv, 16, crc);
+        u32(cv, 20, data.length);
+        u32(cv, 24, data.length);
+        u16(cv, 28, name.length);
+        u32(cv, 42, offset);
+        central.set(name, 46);
+        directory.push(central);
+        offset += local.length + data.length;
+    }
+    const dirSize = directory.reduce((sum, chunk) => sum + chunk.length, 0);
+    const end = new Uint8Array(22), ev = new DataView(end.buffer);
+    u32(ev, 0, 0x06054b50);
+    u16(ev, 8, files.length);
+    u16(ev, 10, files.length);
+    u32(ev, 12, dirSize);
+    u32(ev, 16, offset);
+    const parts = [...chunks, ...directory, end].map(bytes => new Uint8Array(bytes).buffer);
+    return new Blob(parts, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+function worksheetXml(rows) {
+    const col = (index) => {
+        let result = "";
+        for (let n = index + 1; n; n = Math.floor((n - 1) / 26))
+            result = String.fromCharCode(65 + ((n - 1) % 26)) + result;
+        return result;
+    };
+    const sheetRows = rows.map((row, r) => `<row r="${r + 1}">${row.map((value, c) => {
+        const ref = `${col(c)}${r + 1}`;
+        const style = r === 0 ? ' s="1"' : "";
+        return `<c r="${ref}" t="inlineStr"${style}><is><t xml:space="preserve">${escapeXml(value)}</t></is></c>`;
+    }).join("")}</row>`).join("");
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${[18, 14, 28, 22, 10, 14, 14, 12, 9, 22, 42, 32, 32, 42, 32, 24, 24].map((width, i) => `<col min="${i + 1}" max="${i + 1}" width="${width}" customWidth="1"/>`).join("")}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:Q${Math.max(rows.length, 1)}"/></worksheet>`;
+}
+function createXlsxBlob(sourceEntries) {
+    const headers = ["Read date", "Status", "Title", "Authors", "Year", "Journal", "DOI", "URL", "Rating", "Tags", "Key points", "Methods", "Limitations", "Thinking", "Next steps", "Created", "Updated"];
+    const rows = sourceEntries.map(e => [e.readDate, e.status, e.title, e.authors, e.year, e.journal, e.doi, e.url, e.rating || "", e.tags.join(", "), e.keyPoints, e.methods, e.limitations, e.thinking, e.nextSteps, e.createdAt, e.updatedAt]);
+    const files = [
+        { name: "[Content_Types].xml", data: `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>` },
+        { name: "_rels/.rels", data: `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+        { name: "xl/workbook.xml", data: `<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Reading log" sheetId="1" r:id="rId1"/></sheets></workbook>` },
+        { name: "xl/_rels/workbook.xml.rels", data: `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+        { name: "xl/styles.xml", data: `<?xml version="1.0" encoding="UTF-8"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Aptos"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Aptos"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF203F36"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs></styleSheet>` },
+        { name: "xl/worksheets/sheet1.xml", data: worksheetXml([headers, ...rows]) }
+    ];
+    return zipStore(files);
+}
+function exportXlsx() {
+    if (!entries.length)
+        return toast("Save a reading note before exporting.", "warn");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(createXlsxBlob(entries));
+    link.download = `LitReader-${today()}.xlsx`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    toast("XLSX exported.");
+}
+function exportBackup() {
+    const blob = new Blob([JSON.stringify({ version: 1, exportedAt: now(), entries }, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `LitReader-backup-${today()}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    toast("Local backup downloaded.");
+}
+async function importBackup(file) {
+    if (!file)
+        return;
+    try {
+        const parsed = JSON.parse(await file.text());
+        const imported = Array.isArray(parsed) ? parsed : parsed.entries;
+        if (!Array.isArray(imported) || imported.some(entry => !entry.id || !entry.title))
+            throw new Error();
+        const byId = new Map(entries.map(entry => [entry.id, entry]));
+        imported.forEach(entry => byId.set(entry.id, entry));
+        entries = [...byId.values()];
+        persist();
+        toast(`Imported ${imported.length} reading note${imported.length === 1 ? "" : "s"}.`);
+    }
+    catch {
+        toast("That file is not a valid LitReader backup.", "warn");
+    }
+    qs("#backupFile").value = "";
+}
+async function syncGoogle() {
+    if (!settings.googleEndpoint) {
+        openSettings("google");
+        return;
+    }
+    try {
+        await fetch(settings.googleEndpoint, {
+            method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "replace", token: settings.googleToken, records: entries })
+        });
+        toast("Sync request sent to Google Sheets.");
+    }
+    catch {
+        toast("Google Sheets sync could not be sent.", "warn");
+    }
+}
+async function importZotero() {
+    if (!settings.zoteroUserId || !settings.zoteroApiKey) {
+        openSettings("zotero");
+        return;
+    }
+    const button = qs("#zoteroImport");
+    button.disabled = true;
+    button.textContent = "Importing…";
+    try {
+        const response = await fetch(`https://api.zotero.org/users/${encodeURIComponent(settings.zoteroUserId)}/items?itemType=-attachment&limit=100&sort=dateModified&direction=desc`, { headers: { "Zotero-API-Key": settings.zoteroApiKey, "Zotero-API-Version": "3" } });
+        if (!response.ok)
+            throw new Error();
+        const items = await response.json();
+        let added = 0;
+        for (const item of items) {
+            const data = item.data;
+            const doi = normalizeDoi(data.DOI ?? "");
+            if (!data.title || entries.some(e => doi ? e.doi.toLowerCase() === doi.toLowerCase() : e.title.toLowerCase() === data.title.toLowerCase()))
+                continue;
+            entries.push({ ...emptyEntry(), title: data.title, authors: (data.creators ?? []).map((c) => [c.firstName, c.lastName].filter(Boolean).join(" ") || c.name).join(", "), journal: data.publicationTitle ?? data.bookTitle ?? "", year: String(data.date ?? "").match(/\d{4}/)?.[0] ?? "", doi, url: data.url ?? "", readDate: "", status: "To read", tags: (data.tags ?? []).map((t) => t.tag).filter(Boolean) });
+            added++;
+        }
+        persist();
+        toast(added ? `Imported ${added} item${added === 1 ? "" : "s"} from Zotero.` : "Zotero is already up to date.");
+    }
+    catch {
+        toast("Zotero import failed. Check the library ID and key.", "warn");
+    }
+    finally {
+        button.disabled = false;
+        button.textContent = "Import Zotero";
+    }
+}
+async function sendToZotero() {
+    if (!settings.zoteroUserId || !settings.zoteroApiKey) {
+        openSettings("zotero");
+        return;
+    }
+    const entry = entries.find(e => e.id === activeId) ?? readForm();
+    if (!entry.title)
+        return toast("Choose or save an article first.", "warn");
+    try {
+        const payload = [{ itemType: "journalArticle", title: entry.title, creators: entry.authors.split(/,|;/).filter(Boolean).map(name => ({ creatorType: "author", name: name.trim() })), publicationTitle: entry.journal, date: entry.year, DOI: entry.doi, url: entry.url, tags: entry.tags.map(tag => ({ tag })), notes: [{ note: `<p><strong>Key points</strong></p><p>${escapeXml(entry.keyPoints).replaceAll("\n", "<br>")}</p><p><strong>Thinking</strong></p><p>${escapeXml(entry.thinking).replaceAll("\n", "<br>")}</p>` }] }];
+        const response = await fetch(`https://api.zotero.org/users/${encodeURIComponent(settings.zoteroUserId)}/items`, { method: "POST", headers: { "Content-Type": "application/json", "Zotero-API-Key": settings.zoteroApiKey, "Zotero-API-Version": "3" }, body: JSON.stringify(payload) });
+        if (!response.ok)
+            throw new Error();
+        toast("Article sent to Zotero.");
+    }
+    catch {
+        toast("Could not send to Zotero. Check write access.", "warn");
+    }
+}
+const appsScript = `const HEADERS = ['Read date','Status','Title','Authors','Year','Journal','DOI','URL','Rating','Tags','Key points','Methods','Limitations','Thinking','Next steps','Created','Updated'];
+function doPost(e) {
+  const p = JSON.parse(e.postData.contents), expected = PropertiesService.getScriptProperties().getProperty('LITREADER_TOKEN');
+  if (expected && p.token !== expected) return ContentService.createTextOutput('unauthorized');
+  const s = SpreadsheetApp.getActive().getSheetByName('Reading log') || SpreadsheetApp.getActive().insertSheet('Reading log');
+  const rows = p.records.map(x => [x.readDate,x.status,x.title,x.authors,x.year,x.journal,x.doi,x.url,x.rating,x.tags.join(', '),x.keyPoints,x.methods,x.limitations,x.thinking,x.nextSteps,x.createdAt,x.updatedAt]);
+  s.clearContents(); s.getRange(1,1,1,HEADERS.length).setValues([HEADERS]).setFontWeight('bold').setBackground('#203f36').setFontColor('#ffffff');
+  if (rows.length) s.getRange(2,1,rows.length,HEADERS.length).setValues(rows).setWrap(true).setVerticalAlignment('top');
+  s.setFrozenRows(1); return ContentService.createTextOutput('ok');
+}`;
+function openSettings(tab = "google") {
+    qs('[name="googleEndpoint"]').value = settings.googleEndpoint;
+    qs('[name="googleToken"]').value = settings.googleToken;
+    qs('[name="zoteroUserId"]').value = settings.zoteroUserId;
+    qs('[name="zoteroApiKey"]').value = settings.zoteroApiKey;
+    qs("#appsScript").value = appsScript;
+    qsa(".settings-tab").forEach(button => button.classList.toggle("active", button.dataset.tab === tab));
+    qsa(".settings-panel").forEach(panel => panel.classList.toggle("active", panel.id === `${tab}Panel`));
+    const dialog = qs("#settingsDialog");
+    if (!dialog.open)
+        dialog.showModal();
+}
+function init() {
+    qs('[name="readDate"]').value = today();
+    qs("#entryForm").addEventListener("submit", saveEntry);
+    qs("#newEntry").addEventListener("click", resetForm);
+    const doiInput = qs('[name="doi"]');
+    if (!window.__litreaderNativeOwnsDoiLookup) {
+        qs("#fetchDoi").addEventListener("click", fetchDoiMetadata);
+        doiInput.addEventListener("input", () => {
+            window.clearTimeout(doiLookupTimer);
+            if (/^10\.\d{4,9}\/.+/.test(normalizeDoi(doiInput.value)))
+                doiLookupTimer = window.setTimeout(fetchDoiMetadata, 800);
+        });
+        doiInput.addEventListener("keydown", event => { if (event.key === "Enter") {
+            event.preventDefault();
+            fetchDoiMetadata();
+        } });
+    }
+    qs("#exportXlsx").addEventListener("click", exportXlsx);
+    qs("#googleSync").addEventListener("click", syncGoogle);
+    qs("#zoteroImport").addEventListener("click", importZotero);
+    qs("#zoteroSend").addEventListener("click", sendToZotero);
+    qs("#openSettings").addEventListener("click", () => openSettings());
+    qs("#closeSettings").addEventListener("click", () => qs("#settingsDialog").close());
+    qs("#copyScript").addEventListener("click", async () => { await navigator.clipboard.writeText(appsScript); toast("Apps Script copied."); });
+    qs("#exportBackup").addEventListener("click", exportBackup);
+    qs("#importBackup").addEventListener("click", () => qs("#backupFile").click());
+    qs("#backupFile").addEventListener("change", event => importBackup(event.target.files?.[0]));
+    qs("#saveSettings").addEventListener("click", () => {
+        settings = { googleEndpoint: formValue("googleEndpoint"), googleToken: formValue("googleToken"), zoteroUserId: formValue("zoteroUserId"), zoteroApiKey: formValue("zoteroApiKey") };
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        qs("#settingsDialog").close();
+        toast("Connections saved on this device.");
+    });
+    qs("#deleteEntry").addEventListener("click", () => {
+        const entry = entries.find(item => item.id === activeId);
+        if (!entry || !confirm(`Delete “${entry.title}”?`))
+            return;
+        entries = entries.filter(item => item.id !== activeId);
+        persist();
+        resetForm();
+        toast("Reading note deleted.");
+    });
+    qs("#search").addEventListener("input", render);
+    qsa(".filter-chip").forEach(button => button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter ?? "All";
+        qsa(".filter-chip").forEach(item => item.classList.toggle("active", item === button));
+        render();
+    }));
+    qsa(".settings-tab").forEach(button => button.addEventListener("click", () => openSettings(button.dataset.tab)));
+    resetForm();
+    render();
+}
+if (document.readyState !== "interactive" && document.readyState !== "complete") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+}
+else {
+    init();
+}
+
+})();</script></body></html>

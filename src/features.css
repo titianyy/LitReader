@@ -1,0 +1,65 @@
+.doi-first {
+  background: #f1f6f2;
+  border: 1px solid #d4e2d8;
+  border-radius: 10px;
+  padding: 13px;
+}
+.doi-first small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.input-action { display: flex; gap: 8px; }
+.input-action input { margin-top: 7px; }
+.input-action .button { margin-top: 7px; flex: 0 0 auto; }
+.heat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 14px 15px;
+  margin-bottom: 12px;
+}
+.heat-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
+.heat-head .eyebrow { display: block; margin-bottom: 4px; }
+.heat-head strong { font: 400 16px Georgia; }
+.heat-head > span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.heat-body { display: flex; gap: 7px; align-items: flex-start; }
+.day-labels {
+  height: 88px;
+  display: grid;
+  grid-template-rows: repeat(7, 10px);
+  gap: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 10px;
+}
+.day-labels span:nth-child(1) { grid-row: 1; }
+.day-labels span:nth-child(2) { grid-row: 3; }
+.day-labels span:nth-child(3) { grid-row: 5; }
+.heatmap {
+  display: grid;
+  grid-template-rows: repeat(7, 10px);
+  grid-auto-flow: column;
+  grid-auto-columns: 10px;
+  gap: 3px;
+  overflow: hidden;
+}
+.heat-day, .heat-legend i { width: 10px; height: 10px; border-radius: 2px; background: #e5e7e1; }
+.heat-day { display: block; }
+.level-1 { background: #c7ddd0 !important; }
+.level-2 { background: #8fbaa2 !important; }
+.level-3 { background: #548b70 !important; }
+.level-4 { background: #286047 !important; }
+.heat-day.future { opacity: .28; }
+.heat-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; color: var(--muted); font-size: 9px; margin-top: 9px; }
+.heat-legend i { display: block; }
+
+@media (max-width: 620px) {
+  .input-action { align-items: stretch; }
+  .heatmap { grid-auto-columns: 9px; grid-template-rows: repeat(7, 9px); }
+  .heat-day, .heat-legend i { width: 9px; height: 9px; }
+}
