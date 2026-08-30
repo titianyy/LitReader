@@ -28,6 +28,51 @@ type Settings = {
   zoteroApiKey: string;
 };
 
+type CrossrefDate = { "date-parts"?: Array<Array<number>> };
+type CrossrefAuthor = { given?: string; family?: string; name?: string };
+type CrossrefMessage = {
+  DOI?: string;
+  URL?: string;
+  title?: string[];
+  author?: CrossrefAuthor[];
+  "container-title"?: string[];
+  publisher?: string;
+  subject?: string[];
+  issued?: CrossrefDate;
+  "published-print"?: CrossrefDate;
+  "published-online"?: CrossrefDate;
+  created?: CrossrefDate;
+};
+type DataCiteAttributes = {
+  doi?: string;
+  title?: string;
+  titles?: Array<{ title?: string }>;
+  creators?: Array<{ name?: string; givenName?: string; familyName?: string }>;
+  container?: { title?: string };
+  publisher?: string;
+  publicationYear?: number | string;
+  url?: string;
+  subjects?: Array<{ subject?: string }>;
+};
+type ZoteroItemData = {
+  DOI?: string;
+  title?: string;
+  creators?: Array<{ firstName?: string; lastName?: string; name?: string }>;
+  publicationTitle?: string;
+  bookTitle?: string;
+  date?: string;
+  url?: string;
+  tags?: Array<{ tag?: string }>;
+};
+
+declare global {
+  interface Window {
+    webkit?: { messageHandlers?: { doiLookup?: { postMessage: (request: { id: string; doi: string }) => void } } };
+    __litreaderDoiResult?: (result: NativeDoiResult) => void;
+    __litreaderNativeOwnsDoiLookup?: boolean;
+  }
+}
+
 const STORAGE_KEY = "litreader.entries.v1";
 const SETTINGS_KEY = "litreader.settings.v1";
 
@@ -45,11 +90,12 @@ const normalizeDoi = (doi: string) => doi.trim().replace(/^https?:\/\/(dx\.)?doi
 const tagsFrom = (value: string) => [...new Set(value.split(",").map(tag => tag.trim()).filter(Boolean))];
 
 type ArticleMetadata = { title: string; authors: string; journal: string; year: string; url: string; tags: string[]; source: string };
-type NativeDoiResult = { id: string; source?: "Crossref" | "DataCite"; data?: Record<string, any>; error?: string };
+type NativeDoiResult = { id: string; source?: "Crossref" | "DataCite"; data?: CrossrefMessage | DataCiteAttributes; error?: string };
 const nativeDoiCallbacks = new Map<string, { resolve: (value: NativeDoiResult) => void; reject: (error: Error) => void; timer: number }>();
 let doiLookupTimer = 0;
 
-(globalThis as any).__litreaderDoiResult = (result: NativeDoiResult) => {
+const runtimeGlobal = globalThis as typeof globalThis & { __litreaderDoiResult?: (result: NativeDoiResult) => void };
+runtimeGlobal.__litreaderDoiResult = (result: NativeDoiResult) => {
   const callback = nativeDoiCallbacks.get(result.id);
   if (!callback) return;
   window.clearTimeout(callback.timer);
@@ -66,7 +112,7 @@ function nativeDoiLookup(doi: string) {
       reject(new Error("The DOI lookup timed out."));
     }, 15000);
     nativeDoiCallbacks.set(id, { resolve, reject, timer });
-    (window as any).webkit.messageHandlers.doiLookup.postMessage({ id, doi });
+    window.webkit?.messageHandlers?.doiLookup?.postMessage({ id, doi });
   });
 }
 
@@ -75,11 +121,11 @@ function setFormValue(name: string, value: string) {
   if (field && value) field.value = value;
 }
 
-function crossrefMetadata(message: Record<string, any>): ArticleMetadata {
+function crossrefMetadata(message: CrossrefMessage): ArticleMetadata {
   const date = message.issued ?? message["published-print"] ?? message["published-online"] ?? message.created;
   return {
     title: message.title?.[0] ?? "",
-    authors: (message.author ?? []).map((author: any) => [author.given, author.family].filter(Boolean).join(" ") || author.name).filter(Boolean).join(", "),
+    authors: (message.author ?? []).map(author => [author.given, author.family].filter(Boolean).join(" ") || author.name).filter(Boolean).join(", "),
     journal: message["container-title"]?.[0] ?? message.publisher ?? "",
     year: String(date?.["date-parts"]?.[0]?.[0] ?? ""),
     url: message.URL ?? "",
@@ -88,14 +134,14 @@ function crossrefMetadata(message: Record<string, any>): ArticleMetadata {
   };
 }
 
-function dataciteMetadata(attributes: Record<string, any>): ArticleMetadata {
+function dataciteMetadata(attributes: DataCiteAttributes): ArticleMetadata {
   return {
     title: attributes.titles?.[0]?.title ?? attributes.title ?? "",
-    authors: (attributes.creators ?? []).map((author: any) => author.name ?? [author.givenName, author.familyName].filter(Boolean).join(" ")).filter(Boolean).join(", "),
+    authors: (attributes.creators ?? []).map(author => author.name ?? [author.givenName, author.familyName].filter(Boolean).join(" ")).filter(Boolean).join(", "),
     journal: attributes.container?.title ?? attributes.publisher ?? "",
     year: String(attributes.publicationYear ?? ""),
     url: attributes.url ?? "",
-    tags: (attributes.subjects ?? []).map((subject: any) => subject.subject).filter(Boolean).slice(0, 6),
+    tags: (attributes.subjects ?? []).map(subject => subject.subject).filter((subject): subject is string => Boolean(subject)).slice(0, 6),
     source: "DataCite"
   };
 }
@@ -110,18 +156,18 @@ async function fetchDoiMetadata() {
   qs("#doiStatus").textContent = "Searching Crossref and DataCite…";
   try {
     let metadata: ArticleMetadata | null = null;
-    const nativeHandler = (window as any).webkit?.messageHandlers?.doiLookup;
+    const nativeHandler = window.webkit?.messageHandlers?.doiLookup;
     if (nativeHandler) {
       const result = await nativeDoiLookup(doi);
-      metadata = result.source === "Crossref" ? crossrefMetadata(result.data ?? {}) : dataciteMetadata(result.data ?? {});
+      metadata = result.source === "Crossref" ? crossrefMetadata((result.data ?? {}) as CrossrefMessage) : dataciteMetadata((result.data ?? {}) as DataCiteAttributes);
     } else {
       try {
         const response = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
-        if (response.ok) metadata = crossrefMetadata(((await response.json()) as any).message);
+        if (response.ok) metadata = crossrefMetadata(((await response.json()) as { message: CrossrefMessage }).message);
       } catch { /* Try DataCite next. */ }
       if (!metadata?.title) {
         const response = await fetch(`https://api.datacite.org/dois/${encodeURIComponent(doi)}`);
-        if (response.ok) metadata = dataciteMetadata(((await response.json()) as any).data?.attributes ?? {});
+        if (response.ok) metadata = dataciteMetadata(((await response.json()) as { data?: { attributes?: DataCiteAttributes } }).data?.attributes ?? {});
       }
     }
     if (!metadata?.title) throw new Error();
@@ -400,13 +446,14 @@ async function importZotero() {
   try {
     const response = await fetch(`https://api.zotero.org/users/${encodeURIComponent(settings.zoteroUserId)}/items?itemType=-attachment&limit=100&sort=dateModified&direction=desc`, { headers: { "Zotero-API-Key": settings.zoteroApiKey, "Zotero-API-Version": "3" } });
     if (!response.ok) throw new Error();
-    const items = await response.json() as Array<{ data: Record<string, any> }>;
+    const items = await response.json() as Array<{ data: ZoteroItemData }>;
     let added = 0;
     for (const item of items) {
       const data = item.data;
+      const title = data.title;
       const doi = normalizeDoi(data.DOI ?? "");
-      if (!data.title || entries.some(e => doi ? e.doi.toLowerCase() === doi.toLowerCase() : e.title.toLowerCase() === data.title.toLowerCase())) continue;
-      entries.push({ ...emptyEntry(), title: data.title, authors: (data.creators ?? []).map((c: any) => [c.firstName, c.lastName].filter(Boolean).join(" ") || c.name).join(", "), journal: data.publicationTitle ?? data.bookTitle ?? "", year: String(data.date ?? "").match(/\d{4}/)?.[0] ?? "", doi, url: data.url ?? "", readDate: "", status: "To read", tags: (data.tags ?? []).map((t: any) => t.tag).filter(Boolean) });
+      if (!title || entries.some(e => doi ? e.doi.toLowerCase() === doi.toLowerCase() : e.title.toLowerCase() === title.toLowerCase())) continue;
+      entries.push({ ...emptyEntry(), title, authors: (data.creators ?? []).map(c => [c.firstName, c.lastName].filter(Boolean).join(" ") || c.name || "").join(", "), journal: data.publicationTitle ?? data.bookTitle ?? "", year: String(data.date ?? "").match(/\d{4}/)?.[0] ?? "", doi, url: data.url ?? "", readDate: "", status: "To read", tags: (data.tags ?? []).map(t => t.tag).filter((tag): tag is string => Boolean(tag)) });
       added++;
     }
     persist(); toast(added ? `Imported ${added} item${added === 1 ? "" : "s"} from Zotero.` : "Zotero is already up to date.");
@@ -454,7 +501,7 @@ function init() {
   qs("#entryForm").addEventListener("submit", saveEntry);
   qs("#newEntry").addEventListener("click", resetForm);
   const doiInput = qs<HTMLInputElement>('[name="doi"]');
-  if (!(window as any).__litreaderNativeOwnsDoiLookup) {
+  if (!window.__litreaderNativeOwnsDoiLookup) {
     qs("#fetchDoi").addEventListener("click", fetchDoiMetadata);
     doiInput.addEventListener("input", () => {
       window.clearTimeout(doiLookupTimer);

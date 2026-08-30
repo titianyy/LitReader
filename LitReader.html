@@ -92,7 +92,8 @@ const normalizeDoi = (doi) => doi.trim().replace(/^https?:\/\/(dx\.)?doi\.org\//
 const tagsFrom = (value) => [...new Set(value.split(",").map(tag => tag.trim()).filter(Boolean))];
 const nativeDoiCallbacks = new Map();
 let doiLookupTimer = 0;
-globalThis.__litreaderDoiResult = (result) => {
+const runtimeGlobal = globalThis;
+runtimeGlobal.__litreaderDoiResult = (result) => {
     const callback = nativeDoiCallbacks.get(result.id);
     if (!callback)
         return;
@@ -111,7 +112,7 @@ function nativeDoiLookup(doi) {
             reject(new Error("The DOI lookup timed out."));
         }, 15000);
         nativeDoiCallbacks.set(id, { resolve, reject, timer });
-        window.webkit.messageHandlers.doiLookup.postMessage({ id, doi });
+        window.webkit?.messageHandlers?.doiLookup?.postMessage({ id, doi });
     });
 }
 function setFormValue(name, value) {
@@ -123,7 +124,7 @@ function crossrefMetadata(message) {
     const date = message.issued ?? message["published-print"] ?? message["published-online"] ?? message.created;
     return {
         title: message.title?.[0] ?? "",
-        authors: (message.author ?? []).map((author) => [author.given, author.family].filter(Boolean).join(" ") || author.name).filter(Boolean).join(", "),
+        authors: (message.author ?? []).map(author => [author.given, author.family].filter(Boolean).join(" ") || author.name).filter(Boolean).join(", "),
         journal: message["container-title"]?.[0] ?? message.publisher ?? "",
         year: String(date?.["date-parts"]?.[0]?.[0] ?? ""),
         url: message.URL ?? "",
@@ -134,11 +135,11 @@ function crossrefMetadata(message) {
 function dataciteMetadata(attributes) {
     return {
         title: attributes.titles?.[0]?.title ?? attributes.title ?? "",
-        authors: (attributes.creators ?? []).map((author) => author.name ?? [author.givenName, author.familyName].filter(Boolean).join(" ")).filter(Boolean).join(", "),
+        authors: (attributes.creators ?? []).map(author => author.name ?? [author.givenName, author.familyName].filter(Boolean).join(" ")).filter(Boolean).join(", "),
         journal: attributes.container?.title ?? attributes.publisher ?? "",
         year: String(attributes.publicationYear ?? ""),
         url: attributes.url ?? "",
-        tags: (attributes.subjects ?? []).map((subject) => subject.subject).filter(Boolean).slice(0, 6),
+        tags: (attributes.subjects ?? []).map(subject => subject.subject).filter((subject) => Boolean(subject)).slice(0, 6),
         source: "DataCite"
     };
 }
@@ -158,7 +159,7 @@ async function fetchDoiMetadata() {
         const nativeHandler = window.webkit?.messageHandlers?.doiLookup;
         if (nativeHandler) {
             const result = await nativeDoiLookup(doi);
-            metadata = result.source === "Crossref" ? crossrefMetadata(result.data ?? {}) : dataciteMetadata(result.data ?? {});
+            metadata = result.source === "Crossref" ? crossrefMetadata((result.data ?? {})) : dataciteMetadata((result.data ?? {}));
         }
         else {
             try {
@@ -491,10 +492,11 @@ async function importZotero() {
         let added = 0;
         for (const item of items) {
             const data = item.data;
+            const title = data.title;
             const doi = normalizeDoi(data.DOI ?? "");
-            if (!data.title || entries.some(e => doi ? e.doi.toLowerCase() === doi.toLowerCase() : e.title.toLowerCase() === data.title.toLowerCase()))
+            if (!title || entries.some(e => doi ? e.doi.toLowerCase() === doi.toLowerCase() : e.title.toLowerCase() === title.toLowerCase()))
                 continue;
-            entries.push({ ...emptyEntry(), title: data.title, authors: (data.creators ?? []).map((c) => [c.firstName, c.lastName].filter(Boolean).join(" ") || c.name).join(", "), journal: data.publicationTitle ?? data.bookTitle ?? "", year: String(data.date ?? "").match(/\d{4}/)?.[0] ?? "", doi, url: data.url ?? "", readDate: "", status: "To read", tags: (data.tags ?? []).map((t) => t.tag).filter(Boolean) });
+            entries.push({ ...emptyEntry(), title, authors: (data.creators ?? []).map(c => [c.firstName, c.lastName].filter(Boolean).join(" ") || c.name || "").join(", "), journal: data.publicationTitle ?? data.bookTitle ?? "", year: String(data.date ?? "").match(/\d{4}/)?.[0] ?? "", doi, url: data.url ?? "", readDate: "", status: "To read", tags: (data.tags ?? []).map(t => t.tag).filter((tag) => Boolean(tag)) });
             added++;
         }
         persist();

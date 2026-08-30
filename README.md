@@ -1,5 +1,7 @@
 # LitReader
 
+[![CI](https://github.com/titianyy/LitReader/actions/workflows/ci.yml/badge.svg)](https://github.com/titianyy/LitReader/actions/workflows/ci.yml)
+
 LitReader is a private, local-first scientific literature reading log. The shipped app is the single portable file `LitReader.html`.
 
 For macOS, the packaged `dist/LitReader.app` opens the same app in its own native window. `dist/LitReader-macOS.zip` is the transferable copy.
@@ -27,3 +29,14 @@ Notes are stored in the browser profile used to open the file. Use **Connections
 The application source is TypeScript in `src/litreader.ts`. `npm run standalone` compiles it and combines the JavaScript, styles, and markup into `LitReader.html`.
 
 Run `npm run package:mac` to build and ad-hoc sign the macOS app bundle.
+
+## CI/CD
+
+Every push and pull request to `main` runs lint, tests, and the production build, then stores the standalone HTML as a workflow artifact for 14 days.
+
+To publish a release, push a version tag. The release workflow builds the universal macOS app on a macOS runner and attaches both the app ZIP and standalone HTML to a GitHub Release:
+
+```sh
+git tag v1.4
+git push origin v1.4
+```
